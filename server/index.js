@@ -43,7 +43,8 @@ const agentRegistry = require('./agents/registry');
 // REST routes
 app.use('/api/rooms', roomsRouter);
 app.use('/api/agents', agentsRouter);
-app.use('/api/messages', messagesRouter);
+messagesRouter.setDeps({ messageQueue, agentRegistry });
+app.use('/api/messages', messagesRouter.router);
 
 // Health check
 app.get('/api/health', (req, res) => {

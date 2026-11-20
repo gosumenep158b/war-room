@@ -5,6 +5,10 @@ const triggerParser = require('../services/trigger-parser');
 
 const router = express.Router();
 
+// Set by server/index.js: shared singletons for agent routing.
+let messageQueue = null;
+let agentRegistry = null;
+
 /**
  * GET /api/messages/room/:roomId
  * Get messages for a room
@@ -55,7 +59,7 @@ router.get('/thread/:threadId', (req, res) => {
  * POST /api/messages
  * Create a new message
  */
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { room_id, agent_id, content, parent_id, thread_id, metadata = {} } = req.body;
 
@@ -94,6 +98,23 @@ router.post('/', (req, res) => {
         metadata: db.parseJSON(metadataJson)
       }
     });
+
+    // REST-created messages route to agents the same way socket ones do.
+    const formattedRestMessage = {
+      ...message,
+      mentions,
+      metadata: db.parseJSON(metadataJson)
+    };
+    const parseResult = triggerParser.parseMessage(content, room_id);
+    if (parseResult.targets.length > 0) {
+      await messageQueue.queueForAgents(formattedRestMessage, parseResult.targets);
+    } else if (triggerParser.shouldTriggerAutoResponse(content)) {
+      const roomAgents = agentRegistry.getAgentsByRoom(room_id);
+      const eligibleAgents = roomAgents.filter(a => a.canRespond());
+      if (eligibleAgents.length > 0) {
+        await messageQueue.queueForAgents(formattedRestMessage, eligibleAgents);
+      }
+    }
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -144,4 +165,9 @@ router.put('/:id/status', (req, res) => {
   }
 });
 
-module.exports = router;
+// Set by server/index.js: shared singletons for agent routing. The deps setter
+// runs at mount time, before any request hits these routes.
+module.exports.setDeps = (deps) => {
+  if (deps) { messageQueue = deps.messageQueue; agentRegistry = deps.agentRegistry; }
+};
+module.exports.router = router;

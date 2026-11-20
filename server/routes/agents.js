@@ -118,6 +118,9 @@ router.put('/:id', (req, res) => {
   try {
     const { name, type, api_endpoint, config = {}, room_id, active } = req.body;
     const configJson = JSON.stringify(config);
+    if (name === undefined || type === undefined) {
+      return res.status(400).json({ success: false, error: 'name and type are required for PUT; send the full agent object' });
+    }
 
     db.statements.updateAgent.run(
       name,
@@ -125,7 +128,7 @@ router.put('/:id', (req, res) => {
       api_endpoint,
       configJson,
       room_id,
-      active ? 1 : 0,
+      active === undefined ? 1 : (active ? 1 : 0),
       req.params.id
     );
 

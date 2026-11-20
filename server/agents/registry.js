@@ -1,5 +1,6 @@
 const db = require('../db');
 const ClaudeAgent = require('./claude');
+const OpenAIAgent = require('./openai');
 
 /**
  * Agent Registry
@@ -10,7 +11,8 @@ class AgentRegistry {
     this.agents = new Map();
     this.agentTypes = {
       'claude': ClaudeAgent,
-      // Future: 'openai': OpenAIAgent, 'gemini': GeminiAgent
+      'openai': OpenAIAgent,
+      'openai-compatible': OpenAIAgent
     };
   }
 
@@ -32,7 +34,6 @@ class AgentRegistry {
    */
   loadAgent(agentData) {
     const AgentClass = this.agentTypes[agentData.type];
-
     if (!AgentClass) {
       console.warn(`[AgentRegistry] Unknown agent type: ${agentData.type}`);
       return null;
