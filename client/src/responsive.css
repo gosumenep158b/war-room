@@ -1,0 +1,42 @@
+/* War Room responsive fixes: mobile-first tweaks over the inline-styled app.
+   The sidebar is a fixed 280px flex item; on small screens it must collapse
+   to a full-width column and the chat panel needs room to breathe. */
+
+/* Chat panel flex item must be allowed to shrink below its content width */
+main[class*=""], div[style*="flex: 1"] {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  /* Stack: sidebar on top (as a compact drawer-like section), chat below */
+  #root > div > div:nth-child(2),
+  div[style*="height: 100vh"] > div[style*="flex: 1"] {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+
+  div[style*="width: 280px"] {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+
+  /* Message rows: let text wrap instead of collapsing to one char per line */
+  div[style*="max-width: 800px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Message input full width, no right-edge clipping */
+  div[style*="padding: 16px"] {
+    padding: 12px !important;
+  }
+
+  /* Header title smaller on phones */
+  h1[style*="font-size: 20px"] {
+    font-size: 16px !important;
+  }
+}
