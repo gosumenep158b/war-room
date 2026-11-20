@@ -1,0 +1,31 @@
+{
+  "name": "war-room",
+  "version": "1.0.0",
+  "description": "Multi-Agent Collaboration Platform - War Room",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "concurrently \"node server/index.js\" \"cd client && npm run dev\"",
+    "install:all": "npm install && cd client && npm install",
+    "dev:server": "node server/index.js",
+    "dev:client": "cd client && npm run dev"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.0",
+    "sql.js": "^1.10.3"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true
+  }
+}
