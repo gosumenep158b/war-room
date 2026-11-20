@@ -245,7 +245,7 @@ function AgentModal({ onClose, onCreate }) {
     name: '',
     type: 'claude',
     api_endpoint: '',
-    config: { apiKey: '' }
+    config: { apiKey: '', systemPrompt: '' }
   });
 
   function handleSubmit(e) {
@@ -284,7 +284,18 @@ function AgentModal({ onClose, onCreate }) {
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.label}>API Key</label>
+            <label style={styles.label}>System Prompt / Kepribadian (opsional)</label>
+            <textarea
+              value={formData.config.systemPrompt}
+              onChange={(e) => setFormData({ ...formData, config: { ...formData.config, systemPrompt: e.target.value } })}
+              placeholder="Kamu adalah Muse, kurator konten kreatif..."
+              rows={3}
+              style={{ ...styles.input, resize: 'vertical' }}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>API Key (kosongkan untuk pakai key server)</label>
             <input
               type="password"
               value={formData.config.apiKey}
