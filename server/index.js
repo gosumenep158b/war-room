@@ -18,7 +18,7 @@ const server = http.createServer(app);
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, cb) => cb(null, !origin || origin.endsWith('.vercel.app') || origin === (process.env.CLIENT_URL || 'http://localhost:5173')),
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -27,8 +27,9 @@ app.use(express.json());
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST']
+    origin: (origin, cb) => cb(null, !origin || origin.endsWith('.vercel.app') || origin === (process.env.CLIENT_URL || 'http://localhost:5173')),
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
