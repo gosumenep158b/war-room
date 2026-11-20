@@ -1,15 +1,86 @@
-/* War Room responsive fixes: mobile-first tweaks over the inline-styled app.
-   The sidebar is a fixed 280px flex item; on small screens it must collapse
-   to a full-width column and the chat panel needs room to breathe. */
+/* War Room — glassmorphism redesign + responsive layout.
+   Loaded from index.html before the React bundle; inline styles win on
+   specificity conflicts, so structural/glass rules use !important. */
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-strong: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.25);
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+/* Ambient gradient field behind everything */
+body {
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(88, 101, 242, 0.28), transparent 60%),
+    radial-gradient(900px 500px at 110% 20%, rgba(168, 85, 247, 0.22), transparent 55%),
+    radial-gradient(800px 700px at 50% 115%, rgba(34, 211, 238, 0.16), transparent 55%),
+    linear-gradient(160deg, #0b0e1a 0%, #101322 55%, #0b0e1a 100%) !important;
+  background-attachment: fixed;
+}
+
+/* Glass surfaces: sidebar panels and secondary fills */
+div[style*="var(--bg-secondary)"],
+div[style*="var(--bg-tertiary)"] {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border-color: var(--glass-border) !important;
+}
+
+/* Header: floating glass bar */
+div[style*="height: 100vh"] > header {
+  background: var(--glass-bg-strong) !important;
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+/* Sidebar: glass column */
+div[style*="width: 280px"] {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border-right: 1px solid var(--glass-border) !important;
+}
+
+/* Modals: stronger glass card */
+div[style*="rgba(0, 0, 0, 0.7)"] > div {
+  background: rgba(22, 26, 40, 0.72) !important;
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--glass-highlight);
+  border-radius: 16px !important;
+}
+
+/* Inputs on glass */
+input[style*="var(--bg-tertiary)"] {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 10px !important;
+}
+
+/* Primary button: violet-blue glass pill */
+button[style*="var(--accent)"] {
+  background: linear-gradient(135deg, #5865f2, #a855f7) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 18px rgba(88, 101, 242, 0.35);
+}
 
 /* Chat panel flex item must be allowed to shrink below its content width */
-main[class*=""], div[style*="flex: 1"] {
+main, div[style*="flex: 1"] {
   min-width: 0;
 }
 
+/* ---------------------------------- mobile */
 @media (max-width: 768px) {
-  /* Stack: sidebar on top (as a compact drawer-like section), chat below */
-  #root > div > div:nth-child(2),
   div[style*="height: 100vh"] > div[style*="flex: 1"] {
     flex-direction: column !important;
     overflow-y: auto !important;
@@ -18,8 +89,8 @@ main[class*=""], div[style*="flex: 1"] {
   div[style*="width: 280px"] {
     width: 100% !important;
     border-right: none !important;
-    border-bottom: 1px solid var(--border);
-    max-height: 40vh;
+    border-bottom: 1px solid var(--glass-border) !important;
+    max-height: 38vh;
     overflow-y: auto;
   }
 
@@ -35,7 +106,6 @@ main[class*=""], div[style*="flex: 1"] {
     padding: 12px !important;
   }
 
-  /* Header title smaller on phones */
   h1[style*="font-size: 20px"] {
     font-size: 16px !important;
   }
