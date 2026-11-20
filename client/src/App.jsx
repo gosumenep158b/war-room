@@ -277,9 +277,9 @@ function AgentModal({ onClose, onCreate }) {
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
               style={styles.input}
             >
+              <option value="openai-compatible">OpenAI-compatible (LightVela, dsb.)</option>
+              <option value="openai">OpenAI (api.openai.com)</option>
               <option value="claude">Claude (Anthropic)</option>
-              <option value="openai" disabled>OpenAI (Coming soon)</option>
-              <option value="gemini" disabled>Gemini (Coming soon)</option>
             </select>
           </div>
 
